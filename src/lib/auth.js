@@ -15,8 +15,9 @@ export const authOptions = {
         strategy: 'jwt',
     },
     pages:{
-        signIn: '/login'
-    },
+        signIn: '/',
+        signOut: '/'
+        },
     callbacks: {
         async jwt({token, user}){
             const dbUser = (await db.get(`userId:${token.id}`))

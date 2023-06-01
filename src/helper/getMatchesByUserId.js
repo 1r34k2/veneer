@@ -10,3 +10,4 @@ export const getMatchesByUserId = async (userId) => {
     )
     return matches
 }
+

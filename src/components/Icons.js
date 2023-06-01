@@ -1,6 +1,7 @@
-import { Music4, Contact2, RectangleVertical} from "lucide-react"
+import { Music4, Contact2, RectangleVertical, Pencil} from "lucide-react"
 export const Icons = {
     Music4,
     Contact2,
-    RectangleVertical
+    RectangleVertical,
+    Pencil
 }

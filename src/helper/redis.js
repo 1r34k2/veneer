@@ -14,3 +14,5 @@ export async function fetchRedis(command, ...args){
     const data = await response.json()
     return data.result
 }
+
+
