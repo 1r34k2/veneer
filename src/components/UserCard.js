@@ -3,16 +3,8 @@ import { useState, useEffect, useRef } from "react";
 import { useTransform,useMotionValue, motion, AnimatePresence } from "framer-motion";
 import {storage} from "@/firebase/";
 import { getDownloadURL, ref } from "firebase/storage";
-function ageFunc(dob){
-    const dobArr = dob.split('-')
-    const convDOB = new Date(dobArr[1] + "/" + dobArr[2] + "/" + dobArr[0])
-    console.log(convDOB)
-    var month_diff = Date.now() - convDOB.getTime()
-    var age_dt = new Date(month_diff)
-    return Math.abs(age_dt.getUTCFullYear() - 1970)
-}
+import {ageFunc} from "@/lib/utils";
 export default function UserCard({user1, id, profile}) {
-    console.log(profile)
     const [imgUrl, setImgUrl] = useState("/grey.jpg")
     getDownloadURL(ref(storage, `images/${id}`)).then(url => {
         setImgUrl(url)

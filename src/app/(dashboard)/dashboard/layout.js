@@ -48,7 +48,8 @@ const Layout = async function({children}){
         gender: "",
         about: ""
     })
-    const matches = [] = await getMatchesByUserId(session.user.id)
+
+    const match = await getMatchesByUserId(session.user.id)
 
   return (<div className='w-full flex h-screen'>
     <div className='relative z-20 flex h-full w-full max-w-xs frow flex-col gap-y- overflow-y-auto border-r border-gray-200 bg-white px-6'>
@@ -57,13 +58,13 @@ const Layout = async function({children}){
             <h2 className="text-2xl font-semibold text-black">Diplomacity</h2>
         </Link>
     
-    {matches.length > 0 ? (<div className='text-xs font-semibold leading-6 text-gray-400'>
+    {match.length > 0 ? (<div className='text-xs font-semibold leading-6 text-gray-400'>
         Твои пары
     </div>) : null }
     <nav className='flex flex-1 flex-col'>
         <ul role='list' className="flex flex-1 flex-col gap-y-7">
             <li>
-                <SideBarChatList session={session} matches={matches}/>
+                <SideBarChatList session={session} matches={match}/>
             </li>
             <li>
                 <div className="text-xs font-semibold leading-6 text-gray-400">

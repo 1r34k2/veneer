@@ -15,7 +15,6 @@ export async function POST(req){
             "gender": gender,
             "about": about
         }
-        console.log(newProfile)
         await db.del(`profile:${id}`)
         await db.set(`profile:${id}`, JSON.stringify({name:newProfile.name, dob:newProfile.dob, gender:newProfile.gender, about:newProfile.about}))
         return new Response("OK", {status: 200})

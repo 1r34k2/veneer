@@ -9,5 +9,6 @@ export default async function page(){
   const id = await fetchRedis('get', `user:email:${session.user.email}`)
   const profileREST = await fetchRedis('get', `profile:${id}`)
   const profile = JSON.parse(profileREST)
+  console.log(profileREST)
   return <Config id={id} profile={profile}></Config>
 }

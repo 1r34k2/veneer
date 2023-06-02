@@ -15,11 +15,10 @@ const getToday = () => {
     const dd = String(today.getDate()).padStart(2, '0')
     const mm = String(today.getMonth() + 1).padStart(2, '0')
     const yyyy = today.getFullYear() - 18
-    return yyyy + '/' + mm + '/' + dd
+    return yyyy + '-' + mm + '-' + dd
 }
 
 export default function Config({id, profile}){
-    console.log(profile)
     const [showSuccess, setShowSuccess] = useState(false)
     const [imgUrl, setImgUrl] = useState("/grey.jpg")
     const [loading, setLoading] = useState(true)
@@ -77,7 +76,7 @@ export default function Config({id, profile}){
             <div className ='max-w-sm flex flex-col gap-4 align-center'>
             <input required {...register("name")} placeholder="Имя в профиле" type='text' defaultValue={profile.name} className="block bg-gray-100 h-7 placeholder-gray-900 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"/>
                 
-                <input required {...register("dob")} type='date' max={getToday()} defaultvalue={profile.dob} className="block  bg-gray-100 h-7 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"/>
+                <input required {...register("dob")} type='date' max={getToday()} defaultValue={profile.dob} className="block  bg-gray-100 h-7 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"/>
                 <select defaultValue={profile.gender} required {...register("gender")} className="block px-3 py-0 bg-gray-100 h-7 w-full text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                     <option {...profile.gender === '' ? 'selected' : ''}>Выберите пол:</option>
                     <option {...profile.gender === 'Мужской' ? 'selected' : ''}>Мужской</option>

@@ -1,6 +1,7 @@
 import GoogleProvider from 'next-auth/providers/google'
 import { UpstashRedisAdapter } from '@next-auth/upstash-redis-adapter'
 import { db } from './db'
+import { fetchRedis } from '@/helper/redis'
 export const authOptions = {
     adapter: UpstashRedisAdapter(db,{
         userKeyPrefix: "userId:"
@@ -20,11 +21,17 @@ export const authOptions = {
         },
     callbacks: {
         async jwt({token, user}){
-            const dbUser = (await db.get(`userId:${token.id}`))
-            if (!dbUser){
-                token.id = user.id 
-                return token
-            }
+            const dbUserResult = (await fetchRedis('get', `user:${token.id}`))
+
+      if (!dbUserResult) {
+        if (user) {
+          token.id = user.id
+        }
+
+        return token
+      }
+
+      const dbUser = JSON.parse(dbUserResult) 
             return{
                 id: dbUser.id,
                 name: dbUser.name,

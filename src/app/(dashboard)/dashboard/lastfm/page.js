@@ -7,7 +7,6 @@ export default async function page(){
     const session = await getServerSession()
     const id = await fetchRedis('get', `user:email:${session.user.email}`)
     const ifLast = await fetchRedis('get', `lastfm:${id}`)
-    console.log(ifLast)
     let flag = false
     ifLast ? flag = true : flag = false
     return (<>
