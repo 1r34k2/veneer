@@ -42,7 +42,7 @@ const Layout = async function({children}){
     const session = await getServerSession(authOptions)
     if(!session) notFound()
     const profile = await fetchRedis('get', `profile:${session.user.id}`)
-    if (!profile) db.append(`profile:${session.user.id}`, {
+    if (!profile) db.set(`profile:${session.user.id}`, {
         name: "",
         dob: "",
         gender: "",

@@ -30,6 +30,6 @@ export async function POST(req){
                 data.push(element.name + '~' + element.playcount)
             })
             db.del(`lastfm:${session.user.id}`)
-            db.append(`lastfm:${session.user.id}`, JSON.stringify({username:user, lastUpdate: getToday(), artists:data}))
+            db.set(`lastfm:${session.user.id}`, JSON.stringify({username:user, lastUpdate: getToday(), artists:data}))
             return new Response("OK", {status: 200})
     }

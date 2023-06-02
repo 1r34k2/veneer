@@ -15,10 +15,11 @@ const getToday = () => {
     const dd = String(today.getDate()).padStart(2, '0')
     const mm = String(today.getMonth() + 1).padStart(2, '0')
     const yyyy = today.getFullYear() - 18
-    return yyyy + '-' + mm + '-' + dd
+    return yyyy + '/' + mm + '/' + dd
 }
 
 export default function Config({id, profile}){
+    console.log(profile)
     const [showSuccess, setShowSuccess] = useState(false)
     const [imgUrl, setImgUrl] = useState("/grey.jpg")
     const [loading, setLoading] = useState(true)
@@ -31,6 +32,10 @@ export default function Config({id, profile}){
     }
     async function editProfile(name, dob, gender, about){
         try{
+            if(gender == "Выберите пол:"){
+                toast.error("Выберите пол!")
+                return
+            }
             if(img){
                 await uploadBytesResumable(ref(storage, `images/${id}`), img)
             }
@@ -72,11 +77,11 @@ export default function Config({id, profile}){
             <div className ='max-w-sm flex flex-col gap-4 align-center'>
             <input required {...register("name")} placeholder="Имя в профиле" type='text' defaultValue={profile.name} className="block bg-gray-100 h-7 placeholder-gray-900 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"/>
                 
-                <input required {...register("dob")} type='date' max={getToday()} value={profile.dob} className="block  bg-gray-100 h-7 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"/>
-                <select required {...register("gender")} className="block px-3 py-0 bg-gray-100 h-7 w-full text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                    <option {...profile.gender === "" ? selected : null} disabled>Выберите пол:</option>
-                    <option {...profile.gender === "Мужской" ? selected : null}>Мужской</option>
-                    <option {...profile.gender === "Женский" ? selected : null}>Женский</option>
+                <input required {...register("dob")} type='date' max={getToday()} defaultvalue={profile.dob} className="block  bg-gray-100 h-7 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"/>
+                <select defaultValue={profile.gender} required {...register("gender")} className="block px-3 py-0 bg-gray-100 h-7 w-full text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                    <option {...profile.gender === '' ? 'selected' : ''}>Выберите пол:</option>
+                    <option {...profile.gender === 'Мужской' ? 'selected' : ''}>Мужской</option>
+                    <option {...profile.gender === 'Женский' ? 'selected' : ''}>Женский</option>
                 </select> 
                 <textarea {...register("about")} placeholder="Информация о себе" defaultValue={profile.about} className="block bg-gray-100 h-32 resize-none w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
 

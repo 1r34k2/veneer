@@ -4,6 +4,7 @@ import { XMLParser } from 'fast-xml-parser';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';    
 import { redirect } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 const getToday = () => {
     const today = new Date()
@@ -13,18 +14,11 @@ const getToday = () => {
     return mm + '/' + dd + '/' + yyyy 
 }
 
-export function getServerSideProps(context){
-    const {token} = context.query
-    return {
-        props: {
-            token
-        }
-    }
-}
 
-export default async function page(props){
+
+export default async function page({params, searchParams}) {
+    const token = searchParams.token
     const session = await getServerSession(authOptions)
-    const token = props.searchParams.token
     const api_key = '97bcf44c84e782f84ab4904e788a45a8'
     const method = 'auth.getSession'
     const secret = '632a627c6362bf165e2b61fa5211c060'
@@ -40,13 +34,13 @@ export default async function page(props){
     }
     ).catch(function(error){console.log(error)})
     if(res.data != undefined){
-        await axios.post("http://localhost:3000/api/lastfm",{
+        await axios.post("/api/lastfm",{
             session,
             username: parser.parse(res.data).lfm.session.name,
             lastUpdate: getToday()
         }).then(function(resp){
         })
-        await axios.post("http://localhost:3000/api/getTopArtists",{
+        await axios.post("/api/getTopArtists",{
             session,
             user: parser.parse(res.data).lfm.session.name
         }).then(function(resp){

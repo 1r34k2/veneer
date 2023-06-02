@@ -9,7 +9,7 @@ export async function POST(req){
         const {session,username, lastUpdate} = body
         
         if(!session) return new Response("Unauthorized", {status: 401})
-        db.append(`lastfm:${session.user.id}`,JSON.stringify({username: username,lastUpdate: lastUpdate}))
+        db.set(`lastfm:${session.user.id}`,JSON.stringify({username: username,lastUpdate: lastUpdate}))
 
         return new Response("OK", {status: 200})
     } catch(error){

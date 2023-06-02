@@ -11,7 +11,6 @@ export default function Card({user1,user2, percent}) {
         console.log(error)
     })
     const [startX, setStartX] = useState(0);
-    const [startY, setStartY] = useState(0);
     const [drag, setDrag] = useState(false);
     const [visible, setVisible] = useState(true);
     const x = useMotionValue(0);

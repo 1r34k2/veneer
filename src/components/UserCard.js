@@ -5,7 +5,8 @@ import {storage} from "@/firebase/";
 import { getDownloadURL, ref } from "firebase/storage";
 function ageFunc(dob){
     const dobArr = dob.split('-')
-    const convDOB = new Date(dobArr[1] + "/" + dobArr[2] + "/" + dobArr[2])
+    const convDOB = new Date(dobArr[1] + "/" + dobArr[2] + "/" + dobArr[0])
+    console.log(convDOB)
     var month_diff = Date.now() - convDOB.getTime()
     var age_dt = new Date(month_diff)
     return Math.abs(age_dt.getUTCFullYear() - 1970)
