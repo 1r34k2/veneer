@@ -1,19 +1,19 @@
 import { fetchRedis } from "@/helper/redis"
 import { authOptions } from "@/lib/auth"
-import { messageArrayValidator } from "@/lib/validators/message"
 import { getServerSession } from "next-auth"
 import { notFound } from 'next/navigation'
 import { db } from "@/lib/db"
 import {ageFunc} from "@/lib/utils";
 import ImageForChat from "@/components/ImageForChat"
+import Messages from "@/components/Messages"
+import ChatInput from "@/components/ChatInput"
 
 async function getChatMessages(chatId){
   try{
-    const results = [] = await fetchRedis('zrange', `chat:${chatId}:messages`, 0, -1)
+    const results = [] = await fetchRedis('zrange', `chat:${chatId}`, 0, -1)
     const dbMessages = results.map((message) => JSON.parse(message))
     const reverseDbMessages = dbMessages.reverse()
-    const messages = messageArrayValidator.parse(reverseDbMessages)
-    return messages
+    return reverseDbMessages
   } catch(error){
     console.log(error)
     notFound()
@@ -48,6 +48,8 @@ const page = async function({params}){
         </div> 
       </div>
     </div>
+    <Messages otherId={chatPartnerId} initialMessages={initialMessages} sessionId={session.user.id}/>
+    <ChatInput chatId={chatId}  name={chatPartner.name}/>
   </div>
 }
 

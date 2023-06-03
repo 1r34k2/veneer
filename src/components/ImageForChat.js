@@ -11,9 +11,11 @@ const ImageForChat = function({id}){
         console.log(error)
     })
   return <div>
-    <div className='relative w-6 sm:w-10 h-8 sm:h-12'>
+    <div className='relative flex justify-center items-center rounded-full overflow-hidden w-6 sm:w-12 h-6 sm:h-12'>
             <Image
-            fill
+            width={300}
+            height={400}
+            className=" w-6 h-8 sm:w-12 sm:h-16"
             referrerPolicy="no-referrer"
             src={imgUrl}
             />

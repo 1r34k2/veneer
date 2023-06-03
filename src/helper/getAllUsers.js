@@ -9,7 +9,6 @@ export async function getAllUsers(id){
             people.push(user.split(":")[1])
         }
     })
-    console.log(people)
     const cards = await Promise.all(
         people.map(async (personId) => {
             const profile = await fetchRedis('get', `profile:${personId}`)

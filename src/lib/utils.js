@@ -14,3 +14,7 @@ export function ageFunc(dob){
     var age_dt = new Date(month_diff)
     return Math.abs(age_dt.getUTCFullYear() - 1970)
 }
+
+export function toPusherKey(key){
+    return key.replace(/:/g, '__')
+}
