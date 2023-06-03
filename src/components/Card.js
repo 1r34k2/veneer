@@ -6,6 +6,8 @@ import { getDownloadURL, ref } from "firebase/storage";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import {ageFunc} from "@/lib/utils";
+import { Loader2 } from "lucide-react";
+import Image from "next/image";
 
 
 async function like(id1,id2){
@@ -31,11 +33,14 @@ async function dislike(id1,id2){
     })
 }
 export default function Card({user1, user2, profile, percent}) {
+    const [loading, setLoading] = useState(true)
     const [imgUrl, setImgUrl] = useState("/grey.jpg")
     getDownloadURL(ref(storage, `images/${user2}`)).then(url => {
         setImgUrl(url)
+        setTimeout(()=>setLoading(false), 2000)
     }).catch(function(error){
         console.log(error)
+        setTimeout(()=>setLoading(false), 2000)
     })
     const [startX, setStartX] = useState(0);
     const [drag, setDrag] = useState(false);
@@ -92,19 +97,20 @@ export default function Card({user1, user2, profile, percent}) {
                 <motion.div style={{opacity: opac2}} className="absolute bg-transparent top-10 z-20 left-5 text-red-500 border-red-500 text-4xl font-bold rounded-2xl border-8 px-1 -rotate-45">
                     NOPE               
                 </motion.div>
-                <div className="absolute flex flex-col items-center justify-center bottom-0 z-20 w-full h-1/5 bg-gradient-to-b from-transparent to-black rounded-b-3xl white ">
+                {!loading ? (<div className="absolute flex flex-col items-center justify-center bottom-0 z-20 w-full h-1/5 bg-gradient-to-b from-transparent to-black rounded-b-3xl white ">
                     <h2 className=' text-center text-white bottom-6 left-4 text-xl cursor-default select-none' onClick={drag ? null : h1HandleClick }>{profile.name}, {ageFunc(profile.dob)}</h2>
+                </div>) : null}
+                <div className="relative h-96 w-72 flex items-center justify-center">
+                    {loading ? <Loader2 className='animate-spin mr-2 h-7 w-7' ></Loader2> : <Image   fill referrerPolicy="no-referrer" className='z-10 pointer-events-none h-96 w-72 rounded-3xl' alt={profile.name} src={imgUrl} />}
                 </div>
-                <motion.div className="absolute w-full h-4/5  rounded-3xl white">
-
-                </motion.div>
-                <img className="absolute z-10 w-full h-full rounded-3xl pointer-events-none" src={imgUrl}/>
             </div>
             <AnimatePresence>
             {infoVisible && <motion.div transition={{duration: 0.5}} initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity: 0}} className="absolute z-0 -bottom-40 w-full h-3/5 bg-white rounded-3xl">
                 <div className="w-full h-3/5 rounded-3xl mt-16 p-5">
-                    <h1 className="text-xl bold">О себе:</h1>
+                <h1 className="text-l bold">Процент совместимости: {percent}%</h1>
+                    <h1 className="text-l bold">О себе:</h1>
                     <p className="text-sm word-wrap">{profile.about}</p>
+
                 </div>
                 
             </motion.div>}

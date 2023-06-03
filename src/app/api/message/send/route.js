@@ -33,6 +33,7 @@ export async function POST(req){
             timestamp
         }
         pusherServer.trigger(toPusherKey(`chat:${chatId}`), 'incoming-message', messageData)
+        console.log('triggered')
         pusherServer.trigger(toPusherKey(`chat:${chatPartnerId}`), 'new_message', {
             ...messageData,
             name: sender.name

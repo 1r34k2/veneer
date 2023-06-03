@@ -7,6 +7,7 @@ import {storage} from '@/firebase/';
 import Image from 'next/image';
 import { pusherClient } from '@/lib/pusher';
 const Messages = function({initialMessages, sessionId, otherId, chatId}) {
+    console.log(chatId)
     const [img1, setImg1] = useState("/grey.jpg")
     const [img2, setImg2] = useState("/grey.jpg")
     getDownloadURL(ref(storage, `images/${sessionId}`)).then(url => {
@@ -19,22 +20,25 @@ const Messages = function({initialMessages, sessionId, otherId, chatId}) {
     }).catch(function(error){
         console.log(error)
     })
-    const formatTimestamp = (timestamp) => {
-        return format((timestamp), 'HH:mm')
-    }
+
+        const formatTimestamp = (timestamp) => {
+            return format((timestamp), 'HH:mm')
+        }
+    
     const [messages, setMessages] = useState(initialMessages)
     useEffect(()=>{
         pusherClient.subscribe(
             toPusherKey(`chat:${chatId}`)
         )
+        console.log("subscribed")
         const incomingMessageHandler = (message) => {
             setMessages((prev)=>[message, ...prev])
+            console.log("binded")
         }
         pusherClient.bind(
             'incoming-message', incomingMessageHandler 
         )
-        
-        return()=>{
+        return ()=>{
             pusherClient.unsubscribe(
                 toPusherKey(`chat:${chatId}`)
             )
@@ -42,7 +46,7 @@ const Messages = function({initialMessages, sessionId, otherId, chatId}) {
                 'incoming-message', incomingMessageHandler
             )
         }
-    })
+    },[chatId])
     const scrollDownRef = useRef(null);
   return <div id='messages' className="flex h-full flex-1 flex-col-reverse gap-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
     <div ref={scrollDownRef} />

@@ -29,7 +29,7 @@ export async function POST(req){
             data1.forEach(element => {
                 data.push(element.name + '~' + element.playcount)
             })
-            db.del(`lastfm:${session.user.id}`)
-            db.set(`lastfm:${session.user.id}`, JSON.stringify({username:user, lastUpdate: getToday(), artists:data}))
+            await db.del(`lastfm:${session.user.id}`)
+            await db.set(`lastfm:${session.user.id}`, JSON.stringify({username:user, lastUpdate: getToday(), artists:data}))
             return new Response("OK", {status: 200})
     }

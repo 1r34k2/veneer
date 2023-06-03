@@ -32,15 +32,17 @@ export default async function page({params, searchParams}) {
             api_sig:api_sig
         }        
     }
-    ).catch(function(error){console.log(error)})
+    ).catch(function(error){})
     if(res.data != undefined){
-        await axios.post("/api/lastfm",{
+        await axios.post('https://ire4ka.online/api/lastfm',{
             session,
             username: parser.parse(res.data).lfm.session.name,
             lastUpdate: getToday()
         }).then(function(resp){
+        }).catch(function(error){
+            console.log(error)
         })
-        await axios.post("/api/getTopArtists",{
+        await axios.post('https://ire4ka.online/api/getTopArtists',{
             session,
             user: parser.parse(res.data).lfm.session.name
         }).then(function(resp){

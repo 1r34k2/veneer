@@ -3,12 +3,13 @@ import { useState } from "react"
 import {storage} from "@/firebase/";
 import { getDownloadURL, uploadBytesResumable, ref } from "firebase/storage";
 import Image from "next/image";
-import { Loader2 } from "lucide-react";
+import { Loader2, Router } from "lucide-react";
 import { toast } from "react-hot-toast";
 import Button from "./ui/Button";
 import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const getToday = () => {
     const today = new Date()
@@ -19,7 +20,7 @@ const getToday = () => {
 }
 
 export default function Config({id, profile}){
-    const [showSuccess, setShowSuccess] = useState(false)
+    const router = useRouter()
     const [imgUrl, setImgUrl] = useState("/grey.jpg")
     const [loading, setLoading] = useState(true)
     const [img, setImg] = useState(null);
@@ -29,6 +30,9 @@ export default function Config({id, profile}){
     async function onSubmit(data){
         editProfile(data.name, data.dob, data.gender, data.about)
     }
+    function staticState(bool){
+        setLoading(bool)
+    }
     async function editProfile(name, dob, gender, about){
         try{
             if(gender == "Выберите пол:"){
@@ -36,7 +40,9 @@ export default function Config({id, profile}){
                 return
             }
             if(img){
+                staticState(true)
                 await uploadBytesResumable(ref(storage, `images/${id}`), img)
+                staticState(false)
             }
             
             await axios.post('/api/profile/edit',{
@@ -47,6 +53,7 @@ export default function Config({id, profile}){
                 about
             })
             toast.success('Профиль успешно изменен!')
+            setTimeout(()=>router.refresh(), 2000)
             
         }catch(error){
             if(error instanceof AxiosError){
@@ -61,10 +68,10 @@ export default function Config({id, profile}){
     }
     getDownloadURL(ref(storage, `images/${id}`)).then(url => {
         setImgUrl(url)
-        setLoading(false)
+        setTimeout(()=>setLoading(false), 2000)
     }).catch(function(error){
         console.log(error)
-        setLoading(false)
+        setTimeout(()=>setLoading(false), 2000)
     })
     return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col items-center gap-5">
@@ -74,15 +81,15 @@ export default function Config({id, profile}){
           </div>
           <div className = "h-96 w-72 rounded-3xl p-6 bg-white">
             <div className ='max-w-sm flex flex-col gap-4 align-center'>
-            <input required {...register("name")} placeholder="Имя в профиле" type='text' defaultValue={profile.name} className="block bg-gray-100 h-7 placeholder-gray-900 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"/>
+            <input required {...register("name")} placeholder="Имя в профиле" type='text' defaultValue={profile ? profile.name : null} className="block bg-gray-100 h-7 placeholder-gray-900 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"/>
                 
-                <input required {...register("dob")} type='date' max={getToday()} defaultValue={profile.dob} className="block  bg-gray-100 h-7 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"/>
-                <select defaultValue={profile.gender} required {...register("gender")} className="block px-3 py-0 bg-gray-100 h-7 w-full text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                    <option {...profile.gender === '' ? 'selected' : ''}>Выберите пол:</option>
-                    <option {...profile.gender === 'Мужской' ? 'selected' : ''}>Мужской</option>
-                    <option {...profile.gender === 'Женский' ? 'selected' : ''}>Женский</option>
+                <input required {...register("dob")} type='date' max={getToday()} defaultValue={profile ? profile.dob : null} className="block  bg-gray-100 h-7 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"/>
+                <select defaultValue={profile ? profile.gender : null} required {...register("gender")} className="block px-3 py-0 bg-gray-100 h-7 w-full text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                    <option>Выберите пол:</option>
+                    <option>Мужской</option>
+                    <option>Женский</option>
                 </select> 
-                <textarea {...register("about")} placeholder="Информация о себе" defaultValue={profile.about} className="block bg-gray-100 h-32 resize-none w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                <textarea {...register("about")} placeholder="Информация о себе" defaultValue={profile ? profile.about : null} className="block bg-gray-100 h-32 resize-none w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
 
                 </textarea>
                 <div className="flex flex-col">

@@ -1,7 +1,7 @@
 import { Icons } from "@/components/Icons"
 import { authOptions } from "@/lib/auth"
 import { getServerSession } from "next-auth"
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import Link from "next/link"
 import Image from "next/image"
 import SignOutButton from "@/components/SignOutButton"
@@ -9,45 +9,50 @@ import { getMatchesByUserId } from "@/helper/getMatchesByUserId"
 import SideBarChatList from "@/components/SideBarChatList"
  import { fetchRedis } from "@/helper/redis"
 import { db } from "@/lib/db"
+import ImageForLayout from "@/components/ImageForLayout"
+import axios from "axios"
+import LastFmButton from "@/components/LastFmButton"
 
-const sidebarOptions = [
-    {
-        id:1,
-        name: "Профиль",
-        href: "/profile",
-        icon: 'Contact2'
-    },
-    {
-        id:2,
-        name:"Last.fm",
-        href:"/lastfm",
-        icon: 'Music4'
-    },
-    {
-        id:3,
-        name:"Поиск людей",
-        href:"/",
-        icon: 'RectangleVertical'
-    },
-    {
-        id:4,
-        name:"Редактировать профиль",
-        href:"/config",
-        icon:"Pencil"
-    }
 
-]
 
 const Layout = async function({children}){
     const session = await getServerSession(authOptions)
     if(!session) notFound()
-    const profile = await fetchRedis('get', `profile:${session.user.id}`)
-    if (!profile) db.set(`profile:${session.user.id}`, {
-        name: "",
-        dob: "",
-        gender: "",
-        about: ""
-    })
+    const profileREST = await fetchRedis('get', `profile:${session.user.id}`)
+    const profile = JSON.parse(profileREST)
+    const lastfm = await fetchRedis('get', `lastfm:${session.user.id}`)
+    if(lastfm){
+        const {username, lastUpdate} = JSON.parse(lastfm)
+        console.log((new Date() - new Date(lastUpdate))/(1000*60*60*24))
+        if((new Date() - new Date(lastUpdate))/(1000*60*60*24) > 7){
+            await axios.post('https://ire4ka.online/api/getTopArtists', {
+              session: session,
+              user: username
+            })
+          }
+    }
+    
+    const sidebarOptions = [
+        {
+            id:1,
+            name: "Профиль",
+            href: "/profile",
+            icon: 'Contact2'
+        },
+        {
+            id:2,
+            name:"Поиск людей",
+            href:"/",
+            icon: 'RectangleVertical'
+        },
+        {
+            id:3,
+            name:"Редактировать профиль",
+            href:"/config",
+            icon:"Pencil"
+        }
+    
+    ]
 
     const match = await getMatchesByUserId(session.user.id)
 
@@ -58,14 +63,9 @@ const Layout = async function({children}){
             <h2 className="text-2xl font-semibold text-black">Diplomacity</h2>
         </Link>
     
-    {match.length > 0 ? (<div className='text-xs font-semibold leading-6 text-gray-400'>
-        Твои пары
-    </div>) : null }
+    
     <nav className='flex flex-1 flex-col'>
         <ul role='list' className="flex flex-1 flex-col gap-y-7">
-            <li>
-                <SideBarChatList session={session} matches={match}/>
-            </li>
             <li>
                 <div className="text-xs font-semibold leading-6 text-gray-400">
                     <ul role='list' className="-mx-2 mt-2 space-y-1">
@@ -86,15 +86,26 @@ const Layout = async function({children}){
                                 </li>
                             )
                         })}
+                        <li>
+                            <LastFmButton lastfm={lastfm} session={session} />
+                        </li>
                     </ul>
                     
                 </div>
                 </li>
+                
+                <li>
+            {match.length > 0 ? (<div className='text-xs font-semibold leading-6 text-gray-400'>
+                Твои пары
+            </div>) : null }
+                <SideBarChatList session={session} matches={match}/>
+            </li>
                 <li className="-mx-6 mt-auto flex items-center">
                     <div className="flex flex-1 items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900">
+                <ImageForLayout id={session.user.id} />
                         <span className='sr-only'>Your profile</span>
                         <div className='flex flex-col'>
-                            <span aria-hidden='true'>{session.user.name}</span>
+                            <span aria-hidden='true'>{profile ? profile.name : null }</span>
                             <span className='text-xs text-zinc-400' aria-hidden='true'>
                                 {session.user.email}
                             </span>

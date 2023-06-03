@@ -4,12 +4,14 @@ import { chatHrefConstructor, toPusherKey } from "@/lib/utils"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { toast } from "react-hot-toast"
+import ImageForSideBarChat from "./ImageForSideBarChat"
+
 const SideBarChatList = function({session, matches}){
     const [unseenMessages, setUnseenMessages] = useState([])
     const [activeChats, setActiveChats] = useState(matches)
     const router = useRouter()
     const pathname = usePathname()
-
+    
     useEffect(() => {
         pusherClient.subscribe(toPusherKey(`chat:${session.user.id}`))
         pusherClient.subscribe(toPusherKey(`match:${session.user.id}`))
@@ -53,6 +55,7 @@ const SideBarChatList = function({session, matches}){
         return <li key={match.account.id}>
             <a href={`/dashboard/chat/${chatHrefConstructor(session.user.id,match.account.id)}`}
             className='text-gray-700 hover:text-indigo-600 hover:bg-gray-50 group flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'>
+                <ImageForSideBarChat id={match.account.id} />
                 {match.profile.name}
                 {unseenMessagesCount > 0 ? (
                     <div className='bg-indigo-600 font-medium text-xs text-white w-4 h-4 rounded-full flex justify-center items-center'>
