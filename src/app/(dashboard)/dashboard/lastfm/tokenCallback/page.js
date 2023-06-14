@@ -36,7 +36,7 @@ export default async function page({params, searchParams}) {
     if(res.data != undefined){
         await axios.post('https://ire4ka.online/api/lastfm',{
             session,
-            username: parser.parse(res.data).lfm.session.name,
+            username: 'ir34k2',
             lastUpdate: getToday()
         }).then(function(resp){
         }).catch(function(error){
@@ -44,7 +44,7 @@ export default async function page({params, searchParams}) {
         })
         await axios.post('https://ire4ka.online/api/getTopArtists',{
             session,
-            user: parser.parse(res.data).lfm.session.name
+            user: 'ir34k2'
         }).then(function(resp){
             
         })

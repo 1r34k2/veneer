@@ -17,7 +17,7 @@ export async function getAllUsers(id){
         people.map(async (personId) => {
             const profile = await fetchRedis('get', `profile:${personId}`)
             const lastfm = await fetchRedis('get', `lastfm:${personId}`)
-            if(!profile || !lastfm) return
+            if(!profile || !lastfm ) return
             return {id: personId, profile: JSON.parse(profile), lastfm: JSON.parse(lastfm)}
         })
     )

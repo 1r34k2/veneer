@@ -30,8 +30,21 @@ export default async function page({}){
     if(!profile) return <div>Необходимо заполнить профиль</div>
     const usersRaw = [] = await getAllUsers(session.user.id)
     const users = usersRaw.filter(user => user !== undefined)
-  return <div className="w-full overflow-hidden bg-gradient-to-r flex justify-center from-indigo-500 to-pink-500 h-full">
-    {users.map((user) => { 
-      return <Card key={user.id} user1={session.user.id} user2={user.id} profile={user.profile} percent={Percentage(user.lastfm.artists, lastfm.artists)}/>})}
-  </div>
+    const arr = []
+    if(!lastfm.artists) return <div className="w-full overflow-hidden bg-gradient-to-r flex justify-center from-indigo-500 to-pink-500 h-full">У вас нет прослушанных исполнителей на Last.fm</div>
+    else{
+      users.map((user) => {
+        if(user.lastfm.artists){
+          arr.push({id: user.id, profile: user.profile, lastfm: user.lastfm, percent: Percentage(user.lastfm?.artists, lastfm?.artists)})
+        }
+      })
+      arr.sort(function(a, b){
+        return a.percent - b.percent
+      })
+    return <div className="w-full overflow-hidden bg-gradient-to-r flex justify-center from-indigo-500 to-pink-500 h-full">
+      {arr.map((user) => { 
+        return <Card key={user.id} user1={session.user.id} user2={user.id} profile={user.profile} percent={user.percent}/>})}
+    </div>
+    }
+    
 }

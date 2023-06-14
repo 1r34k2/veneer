@@ -30,9 +30,6 @@ export default function Config({id, profile}){
     async function onSubmit(data){
         editProfile(data.name, data.dob, data.gender, data.about)
     }
-    function staticState(bool){
-        setLoading(bool)
-    }
     async function editProfile(name, dob, gender, about){
         try{
             if(gender == "Выберите пол:"){
@@ -40,9 +37,9 @@ export default function Config({id, profile}){
                 return
             }
             if(img){
-                staticState(true)
+                setLoading(true)
                 await uploadBytesResumable(ref(storage, `images/${id}`), img)
-                staticState(false)
+                setLoading(false)
             }
             
             await axios.post('/api/profile/edit',{

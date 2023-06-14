@@ -1,12 +1,22 @@
 'use client'
 import Button from "@/components/ui/Button"
 import { useState } from "react"
-import {signIn} from 'next-auth/react'
+import { signIn } from 'next-auth/react'
 import { toast } from "react-hot-toast"
+import { useForm } from "react-hook-form"
+import { Loader2, Mail } from "lucide-react"
+
 
 const page = function({}){
     const [isLoading, setIsLoading] = useState(false)
-
+    const { 
+      register, handleSubmit
+   } = useForm()
+   async function onSubmit(data){
+    console.log(data)
+    loginWithEmail(data.email)
+    
+}
     async function loginWithGoogle(){
         setIsLoading(true)
         try {
@@ -16,22 +26,49 @@ const page = function({}){
         }
         setIsLoading(false)
     }
+  
+    async function loginWithEmail(email){
+      setIsLoading(true)
+      try {
+          signIn("email", {email: email})
+      } catch (error) {
+          console.log(error)
+          toast.error("Что-то пошло не так")
+      }
+      setIsLoading(false)
+  }
 
-  return <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+  return <div className="bg-gradient-to-r from-indigo-500 to-pink-500 flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="w-full h-full flex flex-col items-center justify-center">
+      <h1 className="text-6xl font-bold tracking-tight text-white">Мэтчи тебя уже заждались</h1>
+
     <div className="w-full flex flex-col items-center max-w-md space-y-8">
         <div className="flex flex-col items-center gap-8">
-            logo
+            
             <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-                Войдите в аккаунт
+                Войти в аккаунт
             </h2>
         </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col justify-center items-center gap-8 mx-auto w-full">
+        <input className="bg-gray-100 w-3/5 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required {...register("email")} type="text" placeholder="Email">
+
+        </input>
         <Button 
         isLoading={isLoading}
-        className='max-w-sm mx-auto w-full'
+        className=' mx-auto w-3/5'
+        >{isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : (<Mail className="mr-2 h-6 w-6"/>)}
+          Войти с email
+        </Button>
+        </form>
+        <hr className="w-full"></hr>
+      
+        <Button 
+        isLoading={isLoading}
+        className='mx-auto w-3/5'
         type='button'
         onClick={loginWithGoogle}
         >
-        {isLoading ? null : (<svg
+        {isLoading ? <Loader2 className="mr-2 h- w-4 animate-spin"/> : (<svg
                 className='mr-2 h-6 w-6'
                 aria-hidden='true'
                 focusable='false'
@@ -61,6 +98,8 @@ const page = function({}){
               Google
         </Button>
     </div>
+    </div>
+    
   </div>
 }
 
