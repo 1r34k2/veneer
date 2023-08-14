@@ -16,18 +16,21 @@
 ## Страницы приложения
 
 ### Главная страница
-![mainpage](https://imgur.com/Xb7s1as)
-
-### Вход через гугл-аккаунт
-![google-acc](https://imgur.com/ahsGiJe)
+![mainpage](https://github.com/1r34k2/veneer/blob/master/screenshots/1.png)
 
 ### Страница с карточками других пользователей
-![people-cards](https://imgur.com/FqLXMfq)
+![people-cards](https://github.com/1r34k2/veneer/blob/master/screenshots/2.png)
 
 ### Страница редактирования пользователя
-![user-edit](https://imgur.com/zAKkPja)
+![user-edit](https://github.com/1r34k2/veneer/blob/master/screenshots/3.png)
+
+### Свайп влево
+![swipe-left](https://github.com/1r34k2/veneer/blob/master/screenshots/4.png)
+
+### Свайп вправо
+![swipe-right](https://github.com/1r34k2/veneer/blob/master/screenshots/5.png)
 
 ### Страница чата
-[Imgur](https://imgur.com/ak4zBoF)
+![chat](https://github.com/1r34k2/veneer/blob/master/screenshots/6.png)
 
 
