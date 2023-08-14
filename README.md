@@ -28,6 +28,6 @@
 ![user-edit](https://imgur.com/zAKkPja)
 
 ### Страница чата
-![chat](https://imgur.com/ak4zBoF)
+[Imgur](https://imgur.com/ak4zBoF)
 
 
